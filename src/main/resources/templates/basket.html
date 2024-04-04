@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Koszyk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <style>
+         .btn-my-account, .btn-basket {
+            background-color: white;
+            color: gray;
+            border-color: gray;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+        }
+        .card-img-top {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+            object-fit: contain;
+        }
+
+        .basket-section {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        .book-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .dot {
+            margin-right: 10px;
+            font-size: 30px;
+        }
+
+        .book-info {
+           display: flex;
+           align-items: center;
+           justify-content: space-between;
+        }
+
+        .card-body {
+           overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+        .book-info {
+           flex-direction: column;
+           align-items: flex-start;
+        }
+
+        .list-item {
+            margin-bottom: 30px;
+        }
+
+        .order-button {
+            margin-top: 20px;
+        }
+
+
+    </style>
+</head>
+<body style="background-color: #F7F7F7">
+
+<div style="background-color: #FFFFFF; color: black; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+    <h2>
+        <a href="/library" style="text-decoration: none; color: black;">
+            Biblioteka
+        </a>
+    </h2>
+
+    <div style="display: flex; gap: 20px;">
+
+        <a href="libraryBooks" class="btn btn-basket">
+            Wyszukaj książki
+        </a>
+
+        <a href="/basket" class="btn btn-basket">
+            Koszyk
+        </a>
+
+        <div class="dropdown">
+            <button class="btn btn-my-account dropdown-toggle" type="button" id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                <span th:if="${session.currentUser != null}"
+                      th:text="${session.currentUser.loginUser}">Moje konto</span>
+                <span th:if="${session.currentUser == null}">Moje konto</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li th:if="${session.currentUser == null}"><a class="dropdown-item" href="/login">Zaloguj się</a></li>
+                <li th:if="${session.currentUser != null}"><a class="dropdown-item" href="/userAccount">Mój profil</a>
+                </li>
+                <li th:if="${session.currentUser != null}">
+                    <form method="post">
+                        <button type="submit" class="dropdown-item" name="logout" value="true">Wyloguj się</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+
+            <!-- Sekcja Koszyka i Podsumowania -->
+            <div class="row basket-section">
+                <div class="col-lg-12">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <i class="bi bi-cart-fill"></i> Twój koszyk
+                            </h3>
+                            <div class="row border-bottom mb-2">
+                                <ul>
+                                    <li th:each="book : ${booksInBasket}" class="book-info list-item">
+                                        <span class="dot">•</span>
+                                        <div class="col-md-2">
+                                            <img th:src="@{/libraryAdministrator/images/{filename}(filename=${book.photoFilename})}"
+                                                 class="card-img-top" th:alt="${book.bookTitle}">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span th:text="${book.bookTitle}"></span> -
+                                            <span th:text="${book.firstNameAuthor + ' ' + book.lastNameAuthor}"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <form method="post">
+                                                <input type="hidden" name="bookIdToRemove" th:value="${book.idBook}">
+                                                <button class="btn btn-danger remove-from-basket"
+                                                        name="removeFromBasket" value="true">Usuń z koszyka
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <form method="post">
+                                <div class="text-center order-button">
+                                    <button class="btn btn-primary" name="borrowBooks" value="true">Złóż zamówienie
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

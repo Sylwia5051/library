@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteka</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+</head>
+<body style="background-color: #FFFAF4">
+
+<div class="col-8 col-sm-11 mx-auto my-6">
+    <h5>Książki: </h5>
+    <form method="post">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Wybierz</th>
+                <th scope="col">Id</th>
+                <th scope="col">Tytuł</th>
+                <th scope="col">Imię autora</th>
+                <th scope="col">Nazwisko autora</th>
+                <th scope="col">Kategoria</th>
+                <th scope="col">Zdjęcie</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(books)}">
+                <td colspan="6" class="text-center">No Data</td>
+            </tr>
+            <tr th:each="book : ${books}">
+                <td><input class="form-check-input" type="checkbox" name="selections" th:value="${book.idBook}"/></td>
+                <th scope="row" th:text="${book.idBook}">1</th>
+                <td th:text="${book.bookTitle}">Mark</td>
+                <td th:text="${book.firstNameAuthor}">Otto</td>
+                <td th:text="${book.lastNameAuthor}">@mdo</td>
+                <td th:text="${book.genre.getText()}">Otto</td>
+                <td><img th:src="@{/libraryAdministrator/images/{filename}(filename=${book.photoFilename})}" height="32px"
+                         width="32px"/></td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="submit" name="edit" value="true" class="btn btn-warning mb-5">Edytuj</button>
+        <button type="submit" name="delete" value="true" class="btn btn-danger mb-5">Usuń</button>
+    </form>
+    <!---->
+    <h4>Formularz</h4>
+    <form th:object="${book}" method="post" novalidate enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="bookTitle" class="form-label">Tytuł książki</label>
+            <input type="text" class="form-control" id="bookTitle" th:errorclass="is-invalid" th:field="*{bookTitle}">
+            <div id="validationBookTitle" class="invalid-feedback" th:errors="*{bookTitle}">
+                Please choose a book title.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="firstNameAuthor" class="form-label">Imię autora</label>
+            <input type="text" class="form-control" id="firstNameAuthor" th:errorclass="is-invalid" th:field="*{firstNameAuthor}">
+            <div id="validationFirstNameAuthor" class="invalid-feedback" th:errors="*{firstNameAuthor}">
+                Please choose a author name.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="lastNameAuthor" class="form-label">Nazwisko autora</label>
+            <input type="text" class="form-control" id="lastNameAuthor" th:errorclass="is-invalid" th:field="*{lastNameAuthor}">
+            <div id="validationLastNameAuthor" class="invalid-feedback" th:errors="*{lastNameAuthor}">
+                Please choose a author name.
+            </div>
+        </div>
+        <div>
+            <label for="genre">Kategoria:</label>
+            <select id="genre" name="genre">
+                <option th:each="genre : ${T(pl.kielce.tu.isi.springboothello.biz.enums.Genre).values()}"
+                        th:value="${genre}" th:text="${genre.getText()}"></option>
+            </select>
+        </div>
+        <br>
+        <div class="mb-3">
+            <label for="photoFilename" class="form-label">Załącz zdjęcia</label>
+            <input class="form-control" type="file" id="photoFilename" multiple th:errorclass="is-invalid"
+                   th:field="*{photoFilename}">
+            <div id="validationPhotoFilename" class="invalid-feedback" th:errors="*{photoFilename}">
+                Please choose a username.
+            </div>
+        </div>
+        <input type="hidden" th:field="*{idBook}"/>
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+    </form>
+
+</div>
+
+</body>
+</html>
